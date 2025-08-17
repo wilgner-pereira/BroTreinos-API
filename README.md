@@ -51,6 +51,7 @@ brotreinos/
 Clone o repositório:
 
 git clone [https://github.com/seu-usuario/brotreinos-api.git](https://github.com/wilgner-pereira/BroTreinos-API.git)
+
 cd brotreinos
 
 
