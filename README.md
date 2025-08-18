@@ -37,13 +37,14 @@ Estrutura de treino com dias e exercícios
 Endpoints seguros por usuário autenticado
 
 🗂 Estrutura do Projeto
+```
 brotreinos/
 ├── src/main/java/...   # Código-fonte
 ├── src/main/resources/ # Configurações e application.properties
 ├── src/test/java/...   # Testes automatizados
 ├── pom.xml             # Dependências Maven
 └── .gitignore
-
+```
 ⚡ Como Rodar Localmente
 
 Clone o repositório:
