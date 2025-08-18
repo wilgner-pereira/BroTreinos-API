@@ -1,10 +1,6 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
+# ==============================
+# Eclipse / STS
+# ==============================
 .apt_generated
 .classpath
 .factorypath
@@ -13,31 +9,46 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
+# ==============================
+# IntelliJ IDEA
+# ==============================
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# ==============================
+# NetBeans
+# ==============================
 /nbproject/private/
+# NetBeans build folders
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# ==============================
+# VS Code
+# ==============================
 .vscode/
 
+# ==============================
+# Maven / Gradle / Build
+# ==============================
 /target/
-/*.iml
-/.idea/
-/*.log
-*.class
+/build/
 /.mvn/
 /.mvnw
+/*.log
+*.class
 
+# ==============================
+# Ignorar a pasta resources, exceto application.yml
+# ==============================
+/src/main/resources/**
+!src/main/resources/application.yml
+
+# ==============================
+# Chaves privadas (não versionar)
+# ==============================
 /src/main/resources/keys/
