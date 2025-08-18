@@ -228,6 +228,7 @@ public class TrainingPlanTest {
         verifyNoMoreInteractions(authService, trainingPlanRepository);
     }
 
+    @Test
     public void deleteTrainingPlan_whenFailure_thenThrowResourceNotFoundException() {
         Long trainingPlanId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
