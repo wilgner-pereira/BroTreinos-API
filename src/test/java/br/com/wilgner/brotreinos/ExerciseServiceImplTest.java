@@ -81,7 +81,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testGetExerciseByName_whenExerciseExists_thenReturnDTO() {
+    void getExerciseByName_whenExerciseExists_thenReturnDTO() {
         String exerciseName = "Agachamento";
 
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
@@ -101,7 +101,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testGetExerciseByName_whenNotFound_thenThrowResourceNotFoundException() {
+    void getExerciseByName_whenExerciseNotFound_thenThrowResourceNotFoundException() {
         String exerciseName = "NãoExiste";
 
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
@@ -119,7 +119,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testCreateExercise_success() {
+    void createExercise_whenValidDto_thendReturnResponseDto() {
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(exercisesRepository.findByUser_IdAndName(user.getId(), createDTO.name())).thenReturn(Optional.empty());
@@ -143,7 +143,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testCreateExercises_userNotFound_throwBusinessRuleException() {
+    void createExercises_userNotFound_thenThrowBusinessRuleException() {
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
@@ -159,7 +159,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testCreateExercises_NameAlreadyExists_throwBusinessRuleException() {
+    void createExercises_NameAlreadyExists_thenThrowBusinessRuleException() {
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(exercisesRepository.findByUser_IdAndName(user.getId(), createDTO.name())).thenReturn(Optional.of(savedExercise));
@@ -218,7 +218,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testUpdateExercises_UserNotFound_throwBusinessRuleException() {
+    void testUpdateExercises_UserNotFound_thenThrowBusinessRuleException() {
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
         BusinessRuleException thrown = assertThrows(BusinessRuleException.class, () -> {
@@ -231,7 +231,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testUpdateExercise_duplicateName_throwsBusinessRuleException() {
+    void testUpdateExercise_duplicateName_thenThrowsBusinessRuleException() {
         Long exerciseId = 10L;
         ExercisesCreateDTO updateDTO = new ExercisesCreateDTO("Puxada", 4, 8);
 
@@ -264,7 +264,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testUpdateExercise_sameNameAsItself_shouldNotThrow() {
+    void testUpdateExercise_sameNameAsItself_thenNotThrowException() {
         Long exerciseId = 10L;
         ExercisesCreateDTO updateDTO = new ExercisesCreateDTO("Agachamento", 4, 8);
 
@@ -288,7 +288,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void testUpdateExercise_NotFound_throwExerciseNotFoundException() {
+    void testUpdateExercise_NotFound_thenThrowExerciseNotFoundException() {
         Long exerciseId = 10L;
         ExercisesCreateDTO updateDTO = new ExercisesCreateDTO("Agachamento", 4, 8);
 

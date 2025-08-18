@@ -12,47 +12,8 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-# Bloco de configura??o do JWT
 jwt:
-  public:
-    key: |
-      -----BEGIN PUBLIC KEY-----
-      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs/TL5+niMToHakfgCQPN
-      +aGKKBBDk2W9TAPRHohsRhjzfCGbJVdsuXObtcRKWZmbH+f6jst4qeP5y88Q7hD8
-      Ltv83OQYZh8mcY65S9nssXPPIp4wS814+62Bij7xaint/ZSTb7VGz/HKP5+iU+zv
-      b5o1S5nct76wcaCqs3FkNUeVJYErOmEkZFgbHNy1p6XvEedouD7jY3+aPJrm3b1h
-      sJwOX/BpvxNSHUx890Sd6Z8WJadhoRufvufO2i6SwWWSbNkQO6NdDba7i5ST0VOL
-      Q+Fwhqt1LzWEUbS8buJdUfaw9zVuJ/zfi74la+PeaDwKmHGMT1Wr6zNM7d9j/48e
-      fQIDAQAB
-      -----END PUBLIC KEY-----
   private:
-    key: |
-      -----BEGIN PRIVATE KEY-----
-      MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCz9Mvn6eIxOgdq
-      R+AJA835oYooEEOTZb1MA9EeiGxGGPN8IZslV2y5c5u1xEpZmZsf5/qOy3ip4/nL
-      zxDuEPwu2/zc5BhmHyZxjrlL2eyxc88injBLzXj7rYGKPvFqKe39lJNvtUbP8co/
-      n6JT7O9vmjVLmdy3vrBxoKqzcWQ1R5UlgSs6YSRkWBsc3LWnpe8R52i4PuNjf5o8
-      mubdvWGwnA5f8Gm/E1IdTHz3RJ3pnxYlp2GhG5++587aLpLBZZJs2RA7o10NtruL
-      lJPRU4tD4XCGq3UvNYRRtLxu4l1R9rD3NW4n/N+LviVr495oPAqYcYxPVavrM0zt
-      32P/jx59AgMBAAECggEAKJ+x6jwbokY5x03Lbu2LcXd8kze8sYkNlxvjeNOOMbLP
-      QG3rsp3OPv0woPNbX2e0I5tALj0Tk7KRwOcRKNTvwPpLVmgtc9xDVu5DuTJMYvDE
-      SUnRmEMdtR8Bd75mzDMD9TM1p0mSXz3zjLJSOETr9lMnBdaJg3dKKJR/BHwsBXSt
-      +R87oyUNqL6RPz5JIiIziuPkoPUwmWzy96KE9cT+b1nh+WcFsolDTTGaa26KzZhC
-      Yxe362PCdwtNlHr7TcJQEUHVi5hQoFsL7QDzrc681N2l7KPK6TEVvK4NAHCuAbub
-      mFiGXoH5dLbwrHVYrLrZlNy25f2WTURNBryq9mYVsQKBgQD3sKeMYGMtqLKwRfMW
-      pX4pVYI42A7SJfNbQ9+RI8iwBrioqcG26oDNY6XAgh6lmDo3yKpilK1/XqyufL/s
-      AfFbKceN66NslZjxZjpm7WyXWPdw3Z2iPz1b225yJyZlVDNOyzCI8xfaY+i5av4y
-      TGwO/qtCGupdh1Kteznfi4q8OQKBgQC5/mTTE4hEabWG+oggGrHleCi8cfUfB4z7
-      teeuxDEZB7ZVMLgE6xFf+QuQIi13k2pR0Pb1ArGYoa18D6jY97/nxq6oAFGKNbpF
-      YdbsZQ8CLsnM0SkIgFfU45pq8O+EduVe+Lhbc3nrWjuKsYQV62wQ0e2/Gu5Xn8xo
-      MkX4rmG8ZQKBgGwC4h2qDrXjggCykD4I7wpRWpc1SMlFeWkMIRsm0qZIWBBc7re4
-      bXCjiq13UKv/xSt8WyjgEwSfIYh5qCvf8QNDJd1yq3J3jhl+7erikF8zkbvrOIl/
-      MF+1QeWPwwOfAzzSCJlAAN/gf6UTzkPa5ahoUABkwl0E3P3/5Y3hSR+pAoGBALVX
-      ncJXNvNNBdp3BqYWoQCU6VLi4RXB7Om2cA/r5dr7tADXoXPaJXSng2iiiiYeKvle
-      fopgd/vTFyzwr7XryMYY502SEe5peBYR0NVnqvx71fHGtPU+/WPqDjLaew1yRy0T
-      39v6eRLJRWhyr9AXW6QCqoU7osr4WPn2mlZe35gpAoGARn10YuX4SuWJ4uLffN7D
-      KoGbgQhLgnar/KIBQz61QXweCSPAAKHMpHBInzLLckBKBTmaV16VKvY+t27kF30P
-      Ohu0PkJHRQZs+wUDHL4KODSKEQUS99i7i64EZr/aExu1LmXlBjdeiBr2vDQl4ApB
-      OBH5kmL/blkKaQ5z/3ak5jQ=
-      -----END PRIVATE KEY-----
+    key-location: classpath:keys/private_key.pem
+  public:
+    key-location: classpath:keys/public_key.pem

@@ -72,7 +72,7 @@ public class TrainingPlanTest {
     }
 
     @Test
-    void testCreateCompleteTrainingPlan_whenSuccess() {
+    void createCompleteTrainingPlan_whenSuccess_thenReturnTrainingPlanResponseDTO() {
         // Configuração dos mocks (Arrange)
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -98,7 +98,7 @@ public class TrainingPlanTest {
     }
 
     @Test
-    void testCreateCompleteTrainingPlan_whenFailure_thenReturnBusinessRuleException() {
+    void createCompleteTrainingPlan_whenFailure_thenReturnBusinessRuleException() {
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
@@ -113,7 +113,7 @@ public class TrainingPlanTest {
     }
 
     @Test
-    void testGetByName_whenSuccess() {
+    void getByName_whenSuccess_thenReturnTrainingPlanResponseDTO() {
         String name = "Treino ABC";
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(trainingPlanRepository.findByUser_IdAndName(user.getId(), name)).thenReturn(Optional.of(setUpTrainingPlanEntity));
@@ -129,7 +129,7 @@ public class TrainingPlanTest {
         verifyNoMoreInteractions(trainingPlanRepository, mapper);
     }
     @Test
-    void testGetByName_whenFailure_thenReturnResourceNotFoundException() {
+    void getByName_whenFailure_thenReturnResourceNotFoundException() {
         String name = "Treino Não existe";
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(trainingPlanRepository.findByUser_IdAndName(user.getId(), name)).thenReturn(Optional.empty());
@@ -143,7 +143,7 @@ public class TrainingPlanTest {
     }
 
     @Test
-    void testUpdateTrainingPlan_whenSuccess() {
+    void updateTrainingPlan_whenSuccess_thenReturnTrainingPlanResponseDTO() {
         String name = "Treino ABC";
         TrainingPlanCreateDTO toUpdateDTO = new TrainingPlanCreateDTO(
                 "Treino Upper/Lower",
@@ -190,7 +190,7 @@ public class TrainingPlanTest {
     }
 
     @Test
-    void testUpdateTrainingPlan_whenFailure_thenReturnResourceNotFoundException() {
+    void updateTrainingPlan_whenFailure_thenReturnResourceNotFoundException() {
         TrainingPlanCreateDTO toUpdateDTO = new TrainingPlanCreateDTO(
                 "Treino Upper/Lower",
                 List.of(new TrainingDayCreateDTO(
@@ -214,7 +214,7 @@ public class TrainingPlanTest {
     }
 
     @Test
-    void testDeleteTrainingPlan_whenSuccess() {
+    void deleteTrainingPlan_whenSuccess_thenSucceed() {
         Long trainingPlanId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(trainingPlanRepository.findByUser_IdAndId(user.getId(), trainingPlanId)).thenReturn(Optional.of(setUpTrainingPlanEntity));

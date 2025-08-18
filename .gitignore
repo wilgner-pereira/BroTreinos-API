@@ -39,3 +39,5 @@ build/
 *.class
 /.mvn/
 /.mvnw
+
+/src/main/resources/keys/

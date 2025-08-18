@@ -1,7 +1,6 @@
 package br.com.wilgner.brotreinos;
 
 import br.com.wilgner.brotreinos.exception.BusinessRuleException;
-import br.com.wilgner.brotreinos.exception.ErrorCode;
 import br.com.wilgner.brotreinos.exception.ResourceNotFoundException;
 import br.com.wilgner.brotreinos.model.dto.workoutsession.WorkoutSessionCreateDTO;
 import br.com.wilgner.brotreinos.model.dto.workoutsession.WorkoutSessionMapper;
@@ -70,7 +69,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testCreateWorkoutSession_whenSucess_thenReturnWorkoutSessionResponseDTO(){
+    void createWorkoutSession_whenSucess_thenReturnWorkoutSessionResponseDTO(){
 
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -90,7 +89,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testCreateWorkoutSession_whenFail_thenReturnBusinessRuleException(){
+    void createWorkoutSession_whenFail_thenReturnBusinessRuleException(){
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
@@ -105,7 +104,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testlistAllSessions_whenSucess_thenReturnListOfWorkoutSessions(){
+    void listAllSessions_whenSucess_thenReturnListOfWorkoutSessions(){
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
 
         List<WorkoutSession> workoutList = List.of(setUpWkSavedEntity);
@@ -127,7 +126,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testlistAllSessions_whenFailure_thenReturn(){
+    void listAllSessions_whenFailure_thenReturnListOfWorkoutSessioResponseDTO(){
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
 
         when(wkRepository.findAllByUser_Id(user.getId())).thenReturn(List.of());
@@ -142,7 +141,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testGetSessionById_whenSucess_thenReturnWorkoutResponseDTO(){
+    void getSessionById_whenSucess_thenReturnWorkoutResponseDTO(){
         Long wkId = setUpWkSavedEntity.getId();
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(wkRepository.findByIdAndUser_Id(wkId, user.getId())).thenReturn(Optional.of(setUpWkSavedEntity));
@@ -159,7 +158,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testGetSessionById_whenFailure_thenReturnResourceNotFoundException(){
+    void getSessionById_whenFailure_thenReturnResourceNotFoundException(){
         Long wkId = setUpWkSavedEntity.getId();
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(wkRepository.findByIdAndUser_Id(wkId, user.getId())).thenReturn(Optional.empty());
@@ -173,7 +172,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testUpdateSession_whenSucess_thenReturnWorkoutResponseDTO() {
+    void updateSession_whenSucess_thenReturnWorkoutResponseDTO() {
         // Arrange
         WorkoutSessionCreateDTO toUpdateDTO = new WorkoutSessionCreateDTO(DayOfWeek.SATURDAY, LocalDate.now());
 
@@ -204,7 +203,7 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testUpdateSession_whenFailure_thenReturnResourceNotFoundException() {
+    void updateSession_whenFailure_thenReturnResourceNotFoundException() {
         Long wkId = setUpWkSavedEntity.getId();
         WorkoutSessionCreateDTO toUpdateDTO = new WorkoutSessionCreateDTO(DayOfWeek.SATURDAY, LocalDate.now());
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
@@ -222,11 +221,30 @@ public class WorkoutSessionImplTest {
     }
 
     @Test
-    void testDeleteSession_whenSucess (){
+    void deleteSession_whenSucess_thenSucceed (){
         Long wkId = setUpWkSavedEntity.getId();
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(wkRepository.findByIdAndUser_Id(wkId, user.getId())).thenReturn(Optional.of(setUpWkSavedEntity));
         doNothing().when(wkRepository).delete(setUpWkSavedEntity);
 
+        workoutSessionServiceImpl.deleteSessionById(wkId);
+        verify(authService).getAuthenticatedUserId();
+        verify(wkRepository).findByIdAndUser_Id(wkId, user.getId());
+        verify(wkRepository).delete(setUpWkSavedEntity);
+        verifyNoInteractions(mapper, userRepository);
+    }
+    @Test
+    void deleteSession_whenFailure_thenReturnResourceNotFoundException() {
+        Long wkId = setUpWkSavedEntity.getId();
+        when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
+        when(wkRepository.findByIdAndUser_Id(wkId, user.getId())).thenReturn(Optional.empty());
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> {
+            workoutSessionServiceImpl.deleteSessionById(wkId);
+        });
+        assertEquals("WORKOUT_SESSION_NOT_FOUND", thrown.getErrorCode().name());
+        verify(authService).getAuthenticatedUserId();
+        verify(wkRepository).findByIdAndUser_Id(wkId, user.getId());
+        verifyNoMoreInteractions(authService, wkRepository);
+        verifyNoInteractions(mapper, userRepository);
     }
 }

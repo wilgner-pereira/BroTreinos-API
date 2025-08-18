@@ -65,7 +65,7 @@ public class ExecutionServiceImplTest {
     }
 
     @Test
-    void ExecutionCreate_whenWorkoutSessionExists_thenReturnResponseDTO(){
+    void executionCreate_whenWorkoutSessionExists_thenReturnResponseDTO(){
         Long userId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(userId);
         when(workoutSessionRepository.findByIdAndUser_Id(1L, userId))
@@ -89,7 +89,7 @@ public class ExecutionServiceImplTest {
     }
 
     @Test
-    void executionCreate_whenWorkoutSessionNotFound_thenThrowException(){
+    void executionCreate_whenWorkoutSessionNotFound_thenThrowResourceNotFoundException(){
         Long userId = 10L;
 
         when(authService.getAuthenticatedUserId()).thenReturn(userId);
@@ -163,7 +163,7 @@ public class ExecutionServiceImplTest {
     }
 
     @Test
-    void getById_whenWorkoutSessionNotExists_thenThrowException(){
+    void getById_whenWorkoutSessionNotExists_thenThrowResourceNotFoundException(){
         Long userId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(userId);
         when(executionRepository.findByIdAndWorkoutSession_IdAndWorkoutSession_User_Id(
@@ -186,7 +186,7 @@ public class ExecutionServiceImplTest {
     }
 
     @Test
-    void testUpdateWhenExecutionExists_thenReturnResponseDTO() {
+    void updateWhenExecutionExists_thenReturnResponseDTO() {
         Long userId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(userId);
         when(executionRepository.findByIdAndWorkoutSession_IdAndWorkoutSession_User_Id(executionEntity.getId(),
@@ -205,11 +205,13 @@ public class ExecutionServiceImplTest {
                 workoutSession.getId(),
                 userId);
         verify(mapper).toEntityUpdate(executionEntity, executionCreateDTO);
+        verify(executionRepository).save(executionEntity);
+        verify(mapper).toDto(executionEntity);
         verifyNoMoreInteractions(authService, executionRepository, mapper);
     }
 
     @Test
-    void testUpdateWhenExecutionNotExists_thenThrowException(){
+    void updateWhenExecutionNotExists_thenThrowResourceNotFoundException(){
         Long userId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(userId);
         when(executionRepository.findByIdAndWorkoutSession_IdAndWorkoutSession_User_Id(executionEntity.getId(),
@@ -229,7 +231,7 @@ public class ExecutionServiceImplTest {
     }
 
     @Test
-    void testDeleteWhenExecutionExists_thenReturnNothing() {
+    void delete_whenExecutionExists_thendSucceed() {
         Long userId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(userId);
         when(executionRepository
@@ -246,7 +248,7 @@ public class ExecutionServiceImplTest {
     }
 
     @Test
-    void testDeleteWhenExecutionNotExists_thenThrowException(){
+    void deleteWhenExecutionNotExists_thenThrowResourceNotFoundException(){
         Long userId = 10L;
         when(authService.getAuthenticatedUserId()).thenReturn(userId);
         when(executionRepository
