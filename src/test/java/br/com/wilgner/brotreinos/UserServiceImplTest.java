@@ -10,6 +10,8 @@ import br.com.wilgner.brotreinos.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +30,10 @@ public class UserServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Captor
+    private ArgumentCaptor<User> argumentCaptor;
+
     @InjectMocks
     private UserServiceImpl userServiceImpl;
 
@@ -47,12 +53,16 @@ public class UserServiceImplTest {
     void createUser_whenUsernameNotExists_thenReturnResponseDTO(){
         when(userRepository.findByusername(userDto.username())).thenReturn(Optional.empty());
         when(bCryptPasswordEncoder.encode(userDto.password())).thenReturn("hashedPassword");
-        when(userRepository.save(any(User.class))).thenReturn(userEntity);
+        when(userRepository.save(argumentCaptor.capture())).thenReturn(userEntity);
 
         UserResponseDTO result = userServiceImpl.createUser(userDto);
 
         assertNotNull(result);
         assertEquals(userDto.username(), result.username());
+
+        User userCaptured = argumentCaptor.getValue();
+        assertEquals(userDto.username(), userCaptured.getUsername());
+        assertEquals("hashedPassword", userCaptured.getPassword());
 
         verify(userRepository).findByusername(userDto.username());
         verify(bCryptPasswordEncoder).encode(userDto.password());
@@ -70,6 +80,7 @@ public class UserServiceImplTest {
         assertEquals(ErrorCode.USER_ALREADY_EXISTS, thrown.getErrorCode());
 
         verify(userRepository).findByusername(userDto.username());
-        verifyNoMoreInteractions(userRepository, bCryptPasswordEncoder);
+        verifyNoMoreInteractions(userRepository);
+        verifyNoInteractions(bCryptPasswordEncoder);
     }
 }
