@@ -11,9 +11,12 @@ import br.com.wilgner.brotreinos.model.repository.UserRepository;
 import br.com.wilgner.brotreinos.model.repository.WorkoutSessionRepository;
 import br.com.wilgner.brotreinos.service.AuthService;
 import br.com.wilgner.brotreinos.service.WorkoutSessionServiceImpl;
+import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,6 +43,8 @@ public class WorkoutSessionImplTest {
     @InjectMocks
     private WorkoutSessionServiceImpl  workoutSessionServiceImpl;
 
+    @Captor
+    private ArgumentCaptor<WorkoutSession> argCaptor;
     private User  user;
     private WorkoutSession workoutSession;
     private WorkoutSession setUpWkEntity;
@@ -74,18 +79,26 @@ public class WorkoutSessionImplTest {
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(mapper.toWorkout(setUpWkCreateDTO)).thenReturn(setUpWkEntity);
-        when(wkRepository.save(setUpWkEntity)).thenReturn(setUpWkSavedEntity);
+        when(wkRepository.save(argCaptor.capture())).thenReturn(setUpWkSavedEntity);
         when(mapper.toWorkoutResponseDTO(setUpWkSavedEntity)).thenReturn(setUpWkResponseDTO);
 
         WorkoutSessionResponseDTO result = workoutSessionServiceImpl.createSession(setUpWkCreateDTO);
 
+        //teste  dto saida, record permite comparar obj pra obj
         assertEquals(setUpWkResponseDTO, result);
+
+        //teste entidade que está sendo salva
+        WorkoutSession workoutSession = argCaptor.getValue();
+        assertEquals(setUpWkResponseDTO.id(), workoutSession.getId());
+        assertEquals(setUpWkResponseDTO.dayOfWeek(), workoutSession.getDayOfWeek());
+        assertEquals(setUpWkResponseDTO.localdate(), workoutSession.getWorkoutDate());
+
         verify(authService).getAuthenticatedUserId();
         verify(userRepository).findById(user.getId());
         verify(mapper).toWorkout(setUpWkCreateDTO);
         verify(wkRepository).save(setUpWkEntity);
         verify(mapper).toWorkoutResponseDTO(setUpWkSavedEntity);
-        verifyNoMoreInteractions(authService, userRepository, wkRepository);
+        verifyNoMoreInteractions(authService, userRepository, wkRepository, mapper);
     }
 
     @Test
@@ -145,16 +158,25 @@ public class WorkoutSessionImplTest {
         Long wkId = setUpWkSavedEntity.getId();
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(wkRepository.findByIdAndUser_Id(wkId, user.getId())).thenReturn(Optional.of(setUpWkSavedEntity));
-        when(mapper.toWorkoutResponseDTO(setUpWkSavedEntity)).thenReturn(setUpWkResponseDTO);
+        when(mapper.toWorkoutResponseDTO(argCaptor.capture())).thenReturn(setUpWkResponseDTO);
 
         WorkoutSessionResponseDTO result = workoutSessionServiceImpl.getSessionById(wkId);
+
+        //valida o dto de saida
         assertEquals(setUpWkResponseDTO.id(), result.id());
         assertEquals(setUpWkResponseDTO.dayOfWeek(), result.dayOfWeek());
         assertEquals(setUpWkResponseDTO.localdate(), result.localdate());
+
+        //valida entidade antes de passar pelo mapper
+        WorkoutSession argWk = argCaptor.getValue();
+        assertEquals(setUpWkResponseDTO.id(), argWk.getId());
+        assertEquals(setUpWkResponseDTO.dayOfWeek(), argWk.getDayOfWeek());
+        assertEquals(setUpWkResponseDTO.localdate(), argWk.getWorkoutDate());
+
         verify(authService).getAuthenticatedUserId();
         verify(wkRepository).findByIdAndUser_Id(wkId, user.getId());
         verify(mapper).toWorkoutResponseDTO(setUpWkSavedEntity);
-        verifyNoMoreInteractions(authService, userRepository, wkRepository);
+        verifyNoMoreInteractions(authService, userRepository, wkRepository, mapper);
     }
 
     @Test
@@ -181,7 +203,7 @@ public class WorkoutSessionImplTest {
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(wkRepository.findByIdAndUser_Id(wkId, user.getId())).thenReturn(Optional.of(setUpWkSavedEntity));
         doNothing().when(mapper).toEntityUpdate(setUpWkSavedEntity, toUpdateDTO);
-        when(wkRepository.save(setUpWkSavedEntity)).thenReturn(setUpWkSavedEntity);
+        when(wkRepository.save(argCaptor.getValue())).thenReturn(setUpWkSavedEntity);
 
         WorkoutSessionResponseDTO expectedResponseDTO =
                 new WorkoutSessionResponseDTO(
@@ -196,10 +218,13 @@ public class WorkoutSessionImplTest {
         WorkoutSessionResponseDTO result =
                 workoutSessionServiceImpl.updateSession(wkId, toUpdateDTO);
 
-        assertNotNull(result);
-        assertEquals(expectedResponseDTO.id(), result.id());
-        assertEquals(expectedResponseDTO.dayOfWeek(), result.dayOfWeek());
-        assertEquals(expectedResponseDTO.localdate(), result.localdate());
+        //testa o dto de saida
+        assertEquals(expectedResponseDTO, result);
+
+        //testa a entidade antes do save
+        WorkoutSession argWk = argCaptor.getValue();
+        assertEquals(expectedResponseDTO.dayOfWeek(), argWk.getDayOfWeek());
+        assertEquals(expectedResponseDTO.localdate(), argWk.getWorkoutDate());
     }
 
     @Test
@@ -223,11 +248,14 @@ public class WorkoutSessionImplTest {
     @Test
     void deleteSession_whenSucess_thenSucceed (){
         Long wkId = setUpWkSavedEntity.getId();
+
         when(authService.getAuthenticatedUserId()).thenReturn(user.getId());
         when(wkRepository.findByIdAndUser_Id(wkId, user.getId())).thenReturn(Optional.of(setUpWkSavedEntity));
+
         doNothing().when(wkRepository).delete(setUpWkSavedEntity);
 
         workoutSessionServiceImpl.deleteSessionById(wkId);
+
         verify(authService).getAuthenticatedUserId();
         verify(wkRepository).findByIdAndUser_Id(wkId, user.getId());
         verify(wkRepository).delete(setUpWkSavedEntity);
