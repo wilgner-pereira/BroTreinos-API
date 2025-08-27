@@ -4,7 +4,6 @@ import br.com.wilgner.brotreinos.model.dto.exercisesdto.ExercisesCreateDTO;
 import br.com.wilgner.brotreinos.model.entities.User;
 import br.com.wilgner.brotreinos.model.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional; // Deixe assim, mas considere usar a versão do Spring
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,7 +88,7 @@ public class ExercisesControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.data.name").value("size must be between 1 and 50"))
+                .andExpect(jsonPath("$.data.name").value("O nome não pode estar vazio"))
                 .andExpect(jsonPath("$.data.series").value("must be greater than or equal to 1"))
                 .andExpect(jsonPath("$.data.repeticoes").value("must be greater than or equal to 1"));
     }
