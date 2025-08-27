@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public record ExercisesCreateDTO(
         @NotBlank(message = "O nome não pode estar vazio")
-        @Size(min = 1, max = 50)
+        @Size(max = 50, message = "O nome deve ter no máximo 50 caracteres")
         String name,
         @NotNull
         @Min(1)
