@@ -1,4 +1,4 @@
-package br.com.wilgner.brotreinos;
+package br.com.wilgner.brotreinos.services;
 
 import br.com.wilgner.brotreinos.exception.ResourceNotFoundException;
 import br.com.wilgner.brotreinos.model.dto.executiondto.ExecutionCreateDTO;

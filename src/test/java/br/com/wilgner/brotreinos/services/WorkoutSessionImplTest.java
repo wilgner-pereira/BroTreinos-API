@@ -1,4 +1,4 @@
-package br.com.wilgner.brotreinos;
+package br.com.wilgner.brotreinos.services;
 
 import br.com.wilgner.brotreinos.exception.BusinessRuleException;
 import br.com.wilgner.brotreinos.exception.ResourceNotFoundException;
@@ -11,7 +11,6 @@ import br.com.wilgner.brotreinos.model.repository.UserRepository;
 import br.com.wilgner.brotreinos.model.repository.WorkoutSessionRepository;
 import br.com.wilgner.brotreinos.service.AuthService;
 import br.com.wilgner.brotreinos.service.WorkoutSessionServiceImpl;
-import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
