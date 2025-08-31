@@ -1,10 +1,13 @@
 package br.com.wilgner.brotreinos.controller;
 
 import br.com.wilgner.brotreinos.model.dto.exercisesdto.ExercisesCreateDTO;
+import br.com.wilgner.brotreinos.model.entities.Exercises;
 import br.com.wilgner.brotreinos.model.entities.User;
+import br.com.wilgner.brotreinos.model.repository.ExercisesRepository;
 import br.com.wilgner.brotreinos.model.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,10 +18,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +46,9 @@ public class ExercisesControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ExercisesRepository exercisesRepository;
+
     private String jwtToken;
     private Long testUserId;
 
@@ -58,38 +67,73 @@ public class ExercisesControllerTest {
         Map<String, Object> claims = new HashMap<>();
         claims.put("sub", testUserId.toString());
         claims.put("scope", "ROLE_USER");
-
+        Exercises create = new Exercises();
+        create.setName("Agachamento");
+        create.setRepeticoes(7);
+        create.setSeries(10);
+        create.setUser(savedUser);
+        exercisesRepository.save(create);
         jwtToken = JwtTestUtils.generateToken(jwtEncoder, claims);
     }
 
-    @Test
-    void testCreateExercise() throws Exception {
-        ExercisesCreateDTO createDTO = new ExercisesCreateDTO("Supino Reto", 4, 8);
+    @Nested
+    class CreateExerciseTest {
+        @Test
+        void createExercise() throws Exception {
+            ExercisesCreateDTO createDTO = new ExercisesCreateDTO("Supino Reto", 4, 8);
 
-        mockMvc.perform(post("/exercicios")
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createDTO)))
-                .andExpect(status().isCreated());
-    }
-    @Test
-    void testCreateExercise_InvalidDTO_thenReturnsBadRequest() throws Exception {
-        // JSON com valores inválidos
-        String invalidJson = """
-        {
-            "name": "",
-            "series": 0,
-            "repeticoes": 0
+            mockMvc.perform(post("/exercicios")
+                            .header("Authorization", "Bearer " + jwtToken)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(createDTO)))
+                    .andExpect(status().isCreated());
         }
-        """;
 
-        mockMvc.perform(post("/exercicios")
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.data.name").value("O nome não pode estar vazio"))
-                .andExpect(jsonPath("$.data.series").value("must be greater than or equal to 1"))
-                .andExpect(jsonPath("$.data.repeticoes").value("must be greater than or equal to 1"));
+        @Test
+        void createExercise_InvalidDTO_thenReturnsBadRequest() throws Exception {
+            // JSON com valores inválidos
+            String invalidJson = """
+                    {
+                        "name": "",
+                        "series": 0,
+                        "repeticoes": 0
+                    }
+                    """;
+
+            mockMvc.perform(post("/exercicios")
+                            .header("Authorization", "Bearer " + jwtToken)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(invalidJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.data.name").value("O nome não pode estar vazio"))
+                    .andExpect(jsonPath("$.data.series").value("must be greater than or equal to 1"))
+                    .andExpect(jsonPath("$.data.repeticoes").value("must be greater than or equal to 1"));
+        }
+    }
+
+    @Nested
+    class GetExercises {
+        @Test
+        void getExercisesByName() throws Exception {
+
+            mockMvc.perform(get("/exercicios")
+                    .header("Authorization", "Bearer " + jwtToken)
+                            .param("name", "Agachamento")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.name").value("Agachamento"))
+                    .andExpect(jsonPath("$.data.series").value(10))
+                    .andExpect(jsonPath("$.data.repeticoes").value(7));;
+
+        }
+
+        @Test
+        void getExercisesByNameWhenExerciseNotExists() throws Exception {
+            mockMvc.perform(get("/exercicios")
+                    .header("Authorization", "Bearer " + jwtToken)
+                    .param("name","Bulgaro")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
+        }
     }
 }
