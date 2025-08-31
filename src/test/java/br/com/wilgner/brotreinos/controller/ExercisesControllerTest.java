@@ -22,8 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -72,7 +71,7 @@ public class ExercisesControllerTest {
         create.setRepeticoes(7);
         create.setSeries(10);
         create.setUser(savedUser);
-        exercisesRepository.save(create);
+        Exercises saved = exercisesRepository.save(create);
         jwtToken = JwtTestUtils.generateToken(jwtEncoder, claims);
     }
 
@@ -134,6 +133,52 @@ public class ExercisesControllerTest {
                     .param("name","Bulgaro")
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
+        }
+
+
+        @Test
+        void getExercisesByNameWhenNotAuthenticated() throws Exception {
+            mockMvc.perform(get("/exercicios")
+                            .param("name","Bulgaro")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        void getExercisesByNameWhenTokenIsInvalid() throws Exception {
+            mockMvc.perform(get("/exercicios")
+                            .header("Authorization", "Bearer token_invalido")
+                            .param("name", "Agachamento")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Nested
+    class UpdateExercise{
+        @Test
+        void updateExercise() throws Exception {
+            ExercisesCreateDTO updateDTO = new ExercisesCreateDTO("Agachamento Livre", 5, 12);
+            mockMvc.perform(put("/exercicios/{id}", 1L)
+            .header("Authorization", "Bearer " + jwtToken)
+            .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updateDTO)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.name").value("Agachamento Livre"))
+                    .andExpect(jsonPath("$.data.series").value(5))
+                    .andExpect(jsonPath("$.data.repeticoes").value(12));
+
+        }
+        @Test
+        void updateExerciseWhenNotExists() throws Exception {
+            ExercisesCreateDTO updateDTO = new ExercisesCreateDTO("Agachamento Livre", 5, 12);
+            mockMvc.perform(put("/exercicios/{id}", 100L)
+                            .header("Authorization", "Bearer " + jwtToken)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(updateDTO)))
+                    .andExpect(status().isNotFound());
+
+
         }
     }
 }
