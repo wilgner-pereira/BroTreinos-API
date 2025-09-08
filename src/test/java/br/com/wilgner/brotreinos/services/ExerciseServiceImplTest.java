@@ -12,6 +12,8 @@ import br.com.wilgner.brotreinos.model.repository.UserRepository;
 import br.com.wilgner.brotreinos.service.AuthService;
 import br.com.wilgner.brotreinos.service.ExercisesServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Testes de ClienteServiceImpl")
 @ExtendWith(MockitoExtension.class)
 public class ExerciseServiceImplTest {
 
@@ -80,7 +83,7 @@ public class ExerciseServiceImplTest {
         );
     }
 
-    @Test
+
     void getExerciseByName_whenExerciseExists_thenReturnDTO() {
         String exerciseName = "Agachamento";
 
