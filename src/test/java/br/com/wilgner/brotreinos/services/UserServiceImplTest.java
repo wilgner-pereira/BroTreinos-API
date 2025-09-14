@@ -51,7 +51,7 @@ public class UserServiceImplTest {
 
     @Test
     void createUser_whenUsernameNotExists_thenReturnResponseDTO(){
-        when(userRepository.findByusername(userDto.username())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(userDto.username())).thenReturn(Optional.empty());
         when(bCryptPasswordEncoder.encode(userDto.password())).thenReturn("hashedPassword");
         when(userRepository.save(argumentCaptor.capture())).thenReturn(userEntity);
 
@@ -64,14 +64,14 @@ public class UserServiceImplTest {
         assertEquals(userDto.username(), userCaptured.getUsername());
         assertEquals("hashedPassword", userCaptured.getPassword());
 
-        verify(userRepository).findByusername(userDto.username());
+        verify(userRepository).findByUsername(userDto.username());
         verify(bCryptPasswordEncoder).encode(userDto.password());
         verify(userRepository).save(any(User.class));
     }
 
     @Test
     void createUser_whenUsernameExists_thenThrowBusinessRuleException() {
-        when(userRepository.findByusername(userDto.username())).thenReturn(Optional.of(userEntity));
+        when(userRepository.findByUsername(userDto.username())).thenReturn(Optional.of(userEntity));
 
         BusinessRuleException thrown = assertThrows(BusinessRuleException.class, () -> {
             userServiceImpl.createUser(userDto);
@@ -79,7 +79,7 @@ public class UserServiceImplTest {
 
         assertEquals(ErrorCode.USER_ALREADY_EXISTS, thrown.getErrorCode());
 
-        verify(userRepository).findByusername(userDto.username());
+        verify(userRepository).findByUsername(userDto.username());
         verifyNoMoreInteractions(userRepository);
         verifyNoInteractions(bCryptPasswordEncoder);
     }

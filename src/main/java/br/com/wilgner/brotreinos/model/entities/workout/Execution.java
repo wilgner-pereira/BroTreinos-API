@@ -16,6 +16,7 @@ public class Execution {
     private String exerciseName;
 
     @ManyToOne
+    @JoinColumn(name = "workout_session_id")
     private WorkoutSession workoutSession;
 
     @OneToMany(mappedBy = "execution", cascade = CascadeType.ALL, orphanRemoval = true)

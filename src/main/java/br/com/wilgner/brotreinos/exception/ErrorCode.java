@@ -4,9 +4,6 @@ public enum ErrorCode {
     USER_NOT_FOUND("Usuário não encontrado."),
     USER_ALREADY_EXISTS("Usuário já existe."),
 
-    EXERCISE_NOT_FOUND("Exercício não encontrado."),
-    EXERCISE_ALREADY_EXISTS("Já existe um exercício com esse nome"),
-
     TRAINING_PLAN_NOT_FOUND("Plano de treino não encontrado."),
     TRAINING_DAY_NOT_FOUND("Dia de treino não encontrado."),
 

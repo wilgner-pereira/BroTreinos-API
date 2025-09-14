@@ -4,12 +4,15 @@ import br.com.wilgner.brotreinos.model.entities.trainingplan.TrainingPlan;
 import br.com.wilgner.brotreinos.model.entities.workout.WorkoutSession;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "user")
 public class User {
 
     @Id
@@ -25,15 +28,27 @@ public class User {
     @Column(name = "password", nullable = false,length = 100)
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Exercises> exercises;
-
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<WorkoutSession> workoutSessions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TrainingPlan> trainingPlans;
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 
     public Long getId() {
         return id;
@@ -44,20 +59,14 @@ public class User {
     public String getUsername() {
         return username;
     }
-    public void setUsername(String userName) {
-        this.username = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
     public String getPassword() {
         return password;
     }
     public void setPassword(String password) {
         this.password = password;
-    }
-    public List<Exercises> getExercises() {
-        return exercises;
-    }
-    public void setExercises(List<Exercises> exercises) {
-        this.exercises = exercises;
     }
 
     public List<TrainingPlan> getTrainingPlans() {
