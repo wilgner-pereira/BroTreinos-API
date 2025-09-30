@@ -15,12 +15,23 @@ public class Execution {
     @Column(nullable = false)
     private String exerciseName;
 
+    @Column
+    private String comment;
+
     @ManyToOne
     @JoinColumn(name = "workout_session_id")
     private WorkoutSession workoutSession;
 
     @OneToMany(mappedBy = "execution", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Serie> series = new ArrayList<>();
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public Long getId() {
         return id;
@@ -51,9 +62,27 @@ public class Execution {
     }
 
     public void setSeries(List<Serie> series) {
-        this.series = series;
+        this.series.clear();
+        if (series != null) {
+            series.forEach(this::addSerie);
+        }
     }
 
+    public void addSerie(Serie serie) {
+        serie.setExecution(this);
+        this.series.add(serie);
+    }
+
+    public Execution() {
+    }
+
+    public Execution(String exerciseName, String comment,WorkoutSession workoutSession, List<Serie> series) {
+        this.exerciseName = exerciseName;
+        this.comment = comment;
+        this.workoutSession = workoutSession;
+        this.series = new ArrayList<>();
+        series.forEach(this::addSerie);
+    }
 
     @Override
     public boolean equals(Object o) {

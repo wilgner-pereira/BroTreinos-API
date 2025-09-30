@@ -2,9 +2,9 @@ package br.com.wilgner.brotreinos.model.entities.workout;
 
 import br.com.wilgner.brotreinos.model.entities.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ public class WorkoutSession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private DayOfWeek dayOfWeek;
+    @NotBlank
+    private String name;
 
     @NotNull
     private LocalDate workoutDate;
@@ -27,9 +27,32 @@ public class WorkoutSession {
     private User user;
 
     @OneToMany(mappedBy = "workoutSession", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Execution> exercicios = new ArrayList<>();
+    private List<Execution> executions = new ArrayList<>();
 
     public WorkoutSession() {
+    }
+
+    public WorkoutSession(String name, LocalDate workoutDate, List<Execution> executions) {
+        this.name = name;
+        this.workoutDate = workoutDate;
+        this.executions = new ArrayList<>();
+        executions.forEach(this::addExecution); // agora usa o parâmetro
+    }
+
+    public WorkoutSession(String name, LocalDate workoutDate, User user, List<Execution> executions) {
+        this.name = name;
+        this.workoutDate = workoutDate;
+        this.user = user;
+        this.executions = new ArrayList<>();
+        executions.forEach(this::addExecution);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getId() {
@@ -38,14 +61,6 @@ public class WorkoutSession {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
     }
 
     public LocalDate getWorkoutDate() {
@@ -64,13 +79,24 @@ public class WorkoutSession {
         this.user = user;
     }
 
-    public List<Execution> getExercicios() {
-        return exercicios;
+    public List<Execution> getExecutions() {
+        return executions;
     }
 
-    public void setExercicios(List<Execution> exercicios) {
-        this.exercicios = exercicios;
+    public void setExecutions(List<Execution> executions) {
+        this.executions.clear();
+        if (executions != null) {
+            executions.forEach(this::addExecution);
+        }
     }
+
+    // setar execution no workout
+    public void addExecution(Execution execution) {
+        execution.setWorkoutSession(this);
+        this.executions.add(execution);
+    }
+
+
 
     @Override
     public boolean equals(Object o){

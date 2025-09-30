@@ -1,7 +1,9 @@
 package br.com.wilgner.brotreinos.service;
 
-import br.com.wilgner.brotreinos.model.dto.executiondto.ExecutionCreateDTO;
-import br.com.wilgner.brotreinos.model.dto.executiondto.ExecutionResponseDTO;
+
+
+import br.com.wilgner.brotreinos.model.dto.workoutsession.ExecutionCreateDTO;
+import br.com.wilgner.brotreinos.model.dto.workoutsession.ExecutionResponseDTO;
 
 import java.util.List;
 

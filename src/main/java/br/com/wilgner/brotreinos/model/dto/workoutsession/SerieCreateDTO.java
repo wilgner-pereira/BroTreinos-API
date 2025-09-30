@@ -1,10 +1,11 @@
-package br.com.wilgner.brotreinos.model.dto.executiondto;
+package br.com.wilgner.brotreinos.model.dto.workoutsession;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public record SerieCreateDTO (
+
+public record SerieCreateDTO(
         @NotNull(message = "O número da série é obrigatório")
         @Min(value = 1, message = "O número da série deve ser maior ou igual a 1")
         Integer numero,
@@ -15,6 +16,5 @@ public record SerieCreateDTO (
 
         @NotNull(message = "A carga é obrigatória")
         @DecimalMin(value = "0.0", inclusive = false, message = "A carga deve ser maior que zero")
-        Double carga )
-{
-}
+        Double carga
+) {}

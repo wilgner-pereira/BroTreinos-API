@@ -1,10 +1,22 @@
 package br.com.wilgner.brotreinos.model.dto.workoutsession;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
-import jakarta.validation.constraints.NotNull;
-
-import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
 
-public record WorkoutSessionCreateDTO (@NotNull DayOfWeek dayOfWeek, @NotNull LocalDate localdate){
-}
+public record WorkoutSessionCreateDTO(
+        @NotBlank(message = "O nome do treino não pode estar vazio")
+        String name,
+
+        @NotNull
+        LocalDate workoutDate,
+
+        @NotEmpty
+        @Valid
+        List<ExecutionCreateDTO> executions,
+
+        Long previousSessionId,
+        Long trainingPlanId
+) {}

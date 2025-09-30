@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record PlannedExerciseCreateDTO(
-        @NotBlank(message = "O nome do exercício não pode estar vazio") String exerciseName,
+        @NotBlank(message = "O nome do exercício não pode estar vazio")
+        String exerciseName,
 
         @NotNull(message = "O número de séries é obrigatório")
         @Min(value = 1, message = "O número de séries deve ser no mínimo 1")

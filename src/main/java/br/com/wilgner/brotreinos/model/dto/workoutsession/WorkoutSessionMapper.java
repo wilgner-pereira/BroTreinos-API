@@ -8,22 +8,22 @@ public class WorkoutSessionMapper {
 
     public WorkoutSession toWorkout(WorkoutSessionCreateDTO workDto){
         WorkoutSession workoutSession = new WorkoutSession();
-        workoutSession.setDayOfWeek(workDto.dayOfWeek());
-        workoutSession.setWorkoutDate(workDto.localdate());
+        workoutSession.setName(workDto.name());
+        workoutSession.setWorkoutDate(workDto.workoutDate());
+        workoutSession.setExecutions(workDto.executions().stream().map(wk -> wk));
         return workoutSession;
     }
 
     public WorkoutSessionResponseDTO toWorkoutResponseDTO(WorkoutSession workoutSession){
         return new WorkoutSessionResponseDTO(
                 workoutSession.getId(),
-                workoutSession.getDayOfWeek(),
+                workoutSession.getName(),
                 workoutSession.getWorkoutDate()
-
         );
     }
 
     public void toEntityUpdate(WorkoutSession ex, WorkoutSessionCreateDTO workDto){
-        ex.setDayOfWeek(workDto.dayOfWeek());
+        ex.setName(workDto.name());
         ex.setWorkoutDate(workDto.localdate());
     }
 

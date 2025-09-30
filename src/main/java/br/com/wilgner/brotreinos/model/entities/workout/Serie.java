@@ -24,6 +24,13 @@ public class Serie {
     @JoinColumn(name = "execution_id", nullable = false)
     private Execution execution;
 
+
+    public Serie(Integer numero, Integer repeticoes, Double carga) {
+        this.numero = numero;
+        this.repeticoes = repeticoes;
+        this.carga = carga;
+    }
+
     public Long getId() {
         return id;
     }
@@ -56,11 +63,11 @@ public class Serie {
         this.carga = carga;
     }
 
-    public Execution getExerciseExecution() {
+    public Execution getExecution() {
         return execution;
     }
 
-    public void setExerciseExecution(Execution execution) {
+    public void setExecution(Execution execution) {
         this.execution = execution;
     }
 
